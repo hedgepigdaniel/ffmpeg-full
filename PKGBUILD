@@ -48,14 +48,18 @@ provides=('libavcodec.so' 'libavdevice.so' 'libavfilter.so' 'libavformat.so'
           'libswresample.so' 'ffmpeg')
 conflicts=('ffmpeg')
 source=("https://ffmpeg.org/releases/ffmpeg-${pkgver}.tar.xz"{,.asc}
+	"https://github.com/FFmpeg/FFmpeg/commit/6e42021128982c9b4bc1f698a326a7f8361d67a0.patch"
         'LICENSE')
 sha256sums=('b95f0ae44798ab1434155ac7f81f30a7e9760a02282e4b5898372c22a335347b'
             'SKIP'
+            '075f347baa0d3f8c39189acacebb875d8c032f67a0f19c27c398a4bd2aef2dc5'
             '04a7176400907fd7db0d69116b99de49e582a6e176b3bfb36a03e50a4cb26a36')
 validpgpkeys=('FCF986EA15E6E293A5644F10B4322F04D67658D8')
 
 build() {
     cd "${_srcname}-${pkgver}"
+
+    patch -Np1 -i ../6e42021128982c9b4bc1f698a326a7f8361d67a0.patch
     
     # set x86_64 specific options
     if [ "$CARCH" = 'x86_64' ] 
