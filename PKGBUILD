@@ -3,8 +3,8 @@
 
 pkgname=ffmpeg-full
 _srcname=ffmpeg
-pkgver=4.1.2
-pkgrel=1
+pkgver=4.1.3
+pkgrel=2
 pkgdesc='Complete solution to record, convert and stream audio and video (all possible features including nvenc, qsv and libfdk-aac)'
 arch=('i686' 'x86_64')
 url='https://www.ffmpeg.org/'
@@ -50,7 +50,7 @@ conflicts=('ffmpeg')
 source=("https://ffmpeg.org/releases/ffmpeg-${pkgver}.tar.xz"{,.asc}
 	"https://github.com/FFmpeg/FFmpeg/commit/6e42021128982c9b4bc1f698a326a7f8361d67a0.patch"
         'LICENSE')
-sha256sums=('b95f0ae44798ab1434155ac7f81f30a7e9760a02282e4b5898372c22a335347b'
+sha256sums=('0c3020452880581a8face91595b239198078645e7d7184273b8bcc7758beb63d'
             'SKIP'
             '075f347baa0d3f8c39189acacebb875d8c032f67a0f19c27c398a4bd2aef2dc5'
             '04a7176400907fd7db0d69116b99de49e582a6e176b3bfb36a03e50a4cb26a36')
@@ -78,9 +78,14 @@ build() {
         # on systems with legacy nvidia drivers
         if pacman -Qs '^nvidia-340xx-utils' >/dev/null 2>&1
         then
-            _ldflags="${_ldflags} -L/usr/lib/nvidia"
+            _ldflags+=' -L/usr/lib/nvidia'
         fi
     fi
+    
+    # fix tensorflow include dir
+    ## upstream ffmpeg excects : /usr/include/tensorflow/
+    ## tensorflow package ships: /usr/include/tensorflow/tensorflow/
+    _cflags+=' -I/usr/include/tensorflow'
     
     printf '%s\n' '  -> Running ffmpeg configure script...'
     
